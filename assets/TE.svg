@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Tech Edition mark">
+  <rect width="96" height="96" rx="12" fill="#1b211f"/>
+  <path d="M18 23h60v9H53v43H43V32H18z" fill="#f2efe7"/>
+  <path d="M58 42h20v9H58zm0 17h20v9H58z" fill="#8ca99f"/>
+  <circle cx="74" cy="26" r="5" fill="#b46d4d"/>
+</svg>
