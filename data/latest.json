@@ -1,9 +1,515 @@
 {
-  "date": "",
-  "generated_at": "",
+  "date": "2026-08-26",
+  "generated_at": "2026-08-26T08:28:25-04:00",
   "title": "Tech Edition",
-  "dek": "Interesting things people are building, discovering, experimenting with, reviving, or figuring out.",
-  "lead_stories": [],
-  "sections": [],
-  "rabbit_hole": []
+  "dek": "Websites are learning to expose tools to agents; preservationists are rebuilding old games byte-for-byte; and agent memory is starting to look more like durable systems engineering than chat history.",
+  "lead_stories": [
+    {
+      "headline": "WebMCP could replace a lot of brittle browser clicking with explicit tools",
+      "summary": "The W3C WebMCP draft lets a web page expose structured JavaScript tools to an AI agent. Instead of guessing where to click, an agent can call named operations inside the signed-in page context. Chrome is already experimenting with the API, although the surface is still changing.",
+      "why_it_matters": "This shifts browser agents from visual imitation toward explicit capabilities. The interesting problem becomes which operations a site chooses to expose, which are read-only, and which require confirmation.",
+      "source": "W3C Web Machine Learning Community Group",
+      "url": "https://webmachinelearning.github.io/webmcp/",
+      "published_date": "2026-08-19",
+      "type": "standard",
+      "horizon": "New",
+      "maturity": "experiment",
+      "reader": {
+        "standfirst": "WebMCP is an attempt to give browser agents a small, typed capability surface instead of making them reverse-engineer every interface from pixels and DOM structure.",
+        "body": [
+          "Today, many browser agents operate like a remote user: inspect a page, infer what a button means, click it, then inspect the result. That works, but every redesign can break the inferred procedure.",
+          "WebMCP lets the page register named tools with descriptions, schemas, and handlers. A travel site could expose a search operation; an issue tracker could expose a create-ticket operation; a document app could expose read or edit operations. The agent asks for the capability directly while remaining inside the site's authenticated browser context.",
+          "That makes the permissions model more important than the automation trick. A useful implementation needs to distinguish harmless reads from mutations, destructive actions, or operations that should stop for human confirmation.",
+          "Chrome's experimental API is already moving: documentation notes the older navigator.modelContext surface is being replaced by document.modelContext. That is a strong sign to study the mechanism now without treating the interface as settled."
+        ],
+        "context": "WebMCP sits between traditional browser automation and external MCP servers: the website itself can declare what an agent is allowed to do in the current origin and session.",
+        "key_points": [
+          "Structured tools are less brittle than inferring every action from interface layout.",
+          "The site, not the agent, defines the callable capability surface.",
+          "Mutation boundaries and confirmation rules become first-class design questions.",
+          "The specification and browser API are still experimental."
+        ],
+        "limitations": "The draft is not a stable cross-browser platform yet, and a badly designed tool surface can simply move unsafe automation behind a cleaner API.",
+        "what_to_try": "For a small personal web app, sketch one read-only tool and one write tool. Define exactly what arguments they accept and where human confirmation should occur before writing any implementation."
+      }
+    },
+    {
+      "headline": "Ladybird is becoming a real browser by doing the unglamorous browser work",
+      "summary": "Ladybird's July work included private browsing, browser profiles, geolocation, WebAudio progress, undo/redo, a faster compositor, and continued migration of style and layout code to Rust. None is a flashy browser feature; together they are the machinery required for a genuinely independent engine.",
+      "why_it_matters": "The modern web is dominated by a very small number of engine families. Ladybird is interesting because it is building another engine rather than wrapping Chromium.",
+      "source": "Ladybird Browser Initiative",
+      "url": "https://ladybird.org/newsletter/2026-07-31/",
+      "published_date": "2026-07-31",
+      "type": "project",
+      "horizon": "Emerging",
+      "maturity": "experiment",
+      "reader": {
+        "standfirst": "A browser engine stops looking like a hobby renderer once it has to solve profiles, storage isolation, media, permissions, processes, layout, accessibility, and thousands of compatibility details at the same time.",
+        "body": [
+          "Rendering a page is only one slice of a browser. Profiles need isolated state; private windows need different persistence rules; audio and geolocation touch operating-system services; navigation history needs coherent undo and redo; and the compositor must remain responsive while layout and painting change underneath it.",
+          "Ladybird's recent work is notable because these pieces are accumulating together. Its stated goal is an alpha release in 2026 for Linux and macOS, so the project is moving from 'interesting engine' toward something outsiders can eventually use as a browser.",
+          "The project is also continuing to move pieces of its style and layout implementation toward Rust while maintaining its own engine architecture instead of inheriting Chromium or WebKit."
+        ],
+        "context": "Ladybird grew out of SerenityOS browser work but is now an independent browser project with its own organization and funding structure.",
+        "key_points": [
+          "A new browser engine is mostly a compatibility and systems-engineering project, not a UI project.",
+          "Profiles and private browsing are evidence of product-level state management becoming real.",
+          "A separate engine is technically more significant than another Chromium shell."
+        ],
+        "limitations": "Ladybird is still pre-alpha and should not be treated as a drop-in Firefox or Chrome replacement yet.",
+        "what_to_try": "Follow the monthly newsletters rather than benchmark headlines; they expose which browser subsystems are actually becoming complete."
+      }
+    },
+    {
+      "headline": "A four-star repo has turned Vandal Hearts into a byte-checked native PC port",
+      "summary": "VandalHearts-PcPort combines a matching PlayStation decompilation with a native Windows/Linux runtime. Recent commits re-verified byte-exact decomps after an OS reinstall, checked multiple disc regions, rebuilt the Windows target and Linux AppImage, and documented the reproducibility traps found along the way.",
+      "why_it_matters": "This is preservation as engineering rather than emulation alone: first recover a reference that can be checked against the original binary, then keep modern platform work separate from that reference.",
+      "source": "GitHub",
+      "repo": "HalmyLyseas/VandalHearts-PcPort",
+      "url": "https://github.com/HalmyLyseas/VandalHearts-PcPort",
+      "published_date": "2026-08-23",
+      "type": "project",
+      "horizon": "New",
+      "maturity": "usable",
+      "reader": {
+        "standfirst": "The important part is not merely that an old PlayStation game runs on PC. It is that the project maintains a verifiable reconstruction of the old program while building the modern port around it.",
+        "body": [
+          "Matching decompilation starts with the original executable and reconstructs C or C++ until the historical compiler emits the same machine bytes for a function or region. That gives the project a deterministic check stronger than 'the game seems to behave correctly.'",
+          "The Vandal Hearts project then separates modern host concerns—SDL, input, filesystem behavior, Windows cross-compilation, Linux packaging, timing calibration—from the matching reference work. This avoids contaminating the reconstruction with convenience hacks required by current platforms.",
+          "Recent commits are unusually useful evidence of maturity: the maintainer rebuilt the environment after an OS reinstall and documented byte-exact reproduction, regional disc boot checks, Windows builds, AppImage creation, and cases where a local regression baseline could give a false sense of success."
+        ],
+        "context": "The user must provide original game data; the repository is not a bundled commercial-game download.",
+        "key_points": [
+          "Matching decompilation makes reconstruction falsifiable at the machine-code level.",
+          "Modern port code is cleaner when it is separated from the matching reference.",
+          "Reproducibility documentation is part of preservation, not just build housekeeping."
+        ],
+        "limitations": "Byte matching is not a guarantee that every timing or platform interaction in the native port behaves identically to original hardware.",
+        "what_to_try": "Open the repo's build documentation and trace one verified function from matching decompilation into the host-port layer."
+      }
+    },
+    {
+      "headline": "An agent-memory paper asks a better question: which other agents should you trust?",
+      "summary": "Σ-Mem proposes an online memory for multi-agent systems that records evidence about peer competence and relationships, then uses that history to influence routing and aggregation. The important idea is less 'agents remember' than 'delegation becomes evidence-based state.'",
+      "why_it_matters": "Static agent roles assume a worker is equally trustworthy forever. Reliability memory creates a path toward routing based on observed outcomes, while also exposing hard questions about noisy evaluation and correlated mistakes.",
+      "source": "arXiv",
+      "url": "https://arxiv.org/abs/2607.27958",
+      "published_date": "2026-07-30",
+      "type": "research",
+      "horizon": "New",
+      "maturity": "experiment",
+      "reader": {
+        "standfirst": "Instead of storing more conversation history, Σ-Mem stores operational evidence about who tends to be competent at what and how peers behave together.",
+        "body": [
+          "A multi-agent system usually starts with static roles: researcher, coder, reviewer, planner. But a system can accumulate evidence that one worker performs well on code repair and poorly on ambiguous planning, or that two agents tend to repeat the same failure rather than provide independent checks.",
+          "Σ-Mem treats those observations as memory that can affect future routing or voting. That changes memory from a recall feature into part of the control system.",
+          "The difficult part is authority: a system needs credible outcome signals. If an unreliable reviewer produces the score, the trust memory can learn the wrong lesson. The mechanism is therefore most interesting when paired with explicit verification or human review."
+        ],
+        "context": "The paper is research, not proof that learned reputation scores are ready for production orchestration.",
+        "key_points": [
+          "Agent memory can store competence evidence, not only task content.",
+          "Routing and review can adapt from observed outcomes.",
+          "The quality of the evaluator determines the quality of the trust signal."
+        ],
+        "limitations": "Research benchmarks are cleaner than open-ended real workflows, and correlated failures can make apparent consensus misleading.",
+        "what_to_try": "Before any learned score, keep a tiny review ledger: task type, assigned worker/tool, reviewer outcome, and failure reason. See whether patterns become visible."
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": "github-finds",
+      "title": "GitHub Finds",
+      "items": [
+        {
+          "headline": "mom: rebuildable agent memory from an append-only ledger",
+          "summary": "mom records supported agent transcripts into an append-only Ledger and projects them into a per-project Markdown vault that Claude Code, Codex, or Pi can read with ordinary file tools. If the vault is lost, it can be rebuilt from the Ledger.",
+          "source": "GitHub",
+          "repo": "momhq/mom",
+          "url": "https://github.com/momhq/mom",
+          "published_date": "2026-08-24",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Experiment",
+          "why_it_matters": "It cleanly separates durable evidence from a derived, human-readable memory view.",
+          "why_i_might_care": "The architecture resembles a knowledge system more than a chat-memory plugin: evidence is authoritative; Markdown is a rebuildable projection.",
+          "potential_connection": "For MAPS, study whether support documents should be projections from versioned evidence rather than becoming the only copy of truth.",
+          "limitations": "The current public version is explicitly alpha, so the architecture is more interesting than any claim of finished reliability."
+        },
+        {
+          "headline": "Meterless treats agent subsystems as specs with conformance tests",
+          "summary": "Meterless publishes self-contained engine specifications for memory, world state, reasoning compression, and intent routing, with runnable references and conformance suites for several engines.",
+          "source": "GitHub",
+          "repo": "Meterless/Meterless",
+          "url": "https://github.com/Meterless/Meterless",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "The compelling mechanism is not another agent framework; it is making architectural promises executable and testable.",
+          "why_i_might_care": "A handoff or recovery protocol is much less ambiguous if an implementation has fixtures proving which state transitions are allowed.",
+          "potential_connection": "MAPS could eventually define conformance cases for authority, recovery, handoff, and context-selection behavior.",
+          "limitations": "Top-level recent activity includes substantial documentation/presentation work, and performance claims are primarily project-authored."
+        },
+        {
+          "headline": "mdviewer: a zero-star desktop Markdown reader with the boring features done",
+          "summary": "mdviewer is a focused desktop reader with tabs, split panes, KaTeX, Mermaid, custom CSS, light editing, PDF export, AppImage and Debian packaging. July commits added a resizable sidebar and improved PDF/theme handling.",
+          "source": "GitHub",
+          "repo": "dainakai/mdviewer",
+          "url": "https://github.com/dainakai/mdviewer",
+          "published_date": "2026-07-11",
+          "horizon": "Emerging",
+          "maturity": "usable",
+          "why_it_matters": "It is exactly the kind of low-popularity utility the edition should surface: one ordinary problem solved without trying to become a platform.",
+          "why_i_might_care": "It is worth testing as a 'double-click Markdown and read it' application on Linux."
+        }
+      ]
+    },
+    {
+      "id": "agent-lab",
+      "title": "Agent Lab",
+      "items": [
+        {
+          "headline": "Useful now, experimentally: design websites with a small agent-facing capability surface",
+          "summary": "Chrome's WebMCP experiment makes it practical to prototype a page that exposes explicit operations to agents rather than depending on DOM scraping or visual clicking.",
+          "source": "Chrome for Developers",
+          "url": "https://developer.chrome.com/docs/ai/webmcp/imperative-api",
+          "published_date": "2026-08-18",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Watch",
+          "why_it_matters": "Capability minimization becomes a UI/permission design problem: expose the smallest safe set of operations instead of handing an agent the whole application.",
+          "potential_connection": "This is directly comparable to MAPS tool permissions and human-confirmation boundaries."
+        },
+        {
+          "headline": "Useful now if you accept alpha software: file-native memory beside Claude Code and Codex",
+          "summary": "mom validates Claude Code and Codex flows around a local append-only Ledger and Markdown projections. The agent reads memory with normal file tools rather than querying a dedicated memory service.",
+          "source": "momhq/mom",
+          "url": "https://github.com/momhq/mom",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Experiment",
+          "why_it_matters": "Plain files make memory inspectable, diffable, and recoverable even when a special retrieval service is unavailable."
+        },
+        {
+          "headline": "Interesting research: learn from failed tool calls, not just successful conversations",
+          "summary": "MemToolAgent extracts structured memory from tool interactions and feedback, including critiques of invalid executions, then retrieves only a context-sized subset for future tasks.",
+          "source": "arXiv",
+          "url": "https://arxiv.org/abs/2606.07909",
+          "published_date": "2026-06-06",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "A failed tool action can become a reusable procedural lesson rather than merely a transcript to search later.",
+          "potential_connection": "MAPS should distinguish raw event history from learned operating rules derived from reviewed failures."
+        },
+        {
+          "headline": "Watch, don't swallow the benchmark headline: agents that forge tools at runtime",
+          "summary": "AgentOS experiments with agents generating and loading tools at runtime, persistent memory, and sandboxed execution. The mechanism is interesting because the capability set itself becomes mutable during a task.",
+          "source": "GitHub",
+          "repo": "framerslab/agentos",
+          "url": "https://github.com/framerslab/agentos",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Watch",
+          "why_it_matters": "Dynamic tool creation raises a deeper authority question: who approves a newly invented capability before it can touch real resources?",
+          "limitations": "Project-authored benchmarks and a JavaScript VM boundary are not enough evidence to call the system generally safe or production-ready."
+        }
+      ]
+    },
+    {
+      "id": "games-modding",
+      "title": "Games & Modding",
+      "items": [
+        {
+          "headline": "SkyRoads-Codex is a useful warning about AI-assisted reverse engineering",
+          "summary": "The repo documents an attempt to reverse engineer DOS SkyRoads and build a Rust/SDL native port using Codex. The research log is unusually open, but the repository currently has one commit and independent Hacker News testing reported major playability problems.",
+          "source": "GitHub",
+          "repo": "ammaarreshi/SkyRoads-Codex",
+          "url": "https://github.com/ammaarreshi/SkyRoads-Codex",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Watch",
+          "why_it_matters": "It separates 'AI produced plausible code' from 'the reconstructed simulation has been verified against the original.'",
+          "why_i_might_care": "The prompt and research trail make the failure modes educational instead of hiding them behind a demo."
+        },
+        {
+          "headline": "Kingdom Hearts 358/2 Days keeps decompilation and porting in separate repos",
+          "summary": "khdays-port is an experimental native PC runtime developed alongside a matching Nintendo DS decompilation. Platform rendering, input, audio, filesystem work, and quality-of-life changes live in the port while matching work stays in khdays-decomp.",
+          "source": "GitHub",
+          "repo": "Yokimitsuro/khdays-port",
+          "url": "https://github.com/Yokimitsuro/khdays-port",
+          "horizon": "New",
+          "maturity": "experiment",
+          "why_it_matters": "The repository boundary itself is useful architecture: preservation accuracy and modernization can evolve independently."
+        },
+        {
+          "headline": "Open-BFME is trying to make AI-generated decompilation measurable",
+          "summary": "Open-BFME-1 aims for a byte-for-byte rebuild of Battle for Middle-earth 1. The repo tracks verified functions and byte-compares reconstructed output against the retail executable before accepting work.",
+          "source": "GitHub",
+          "repo": "Open-BFME/Open-BFME-1",
+          "url": "https://github.com/Open-BFME/Open-BFME-1",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "why_it_matters": "AI can generate large amounts of plausible C++. A deterministic binary-equality gate makes the verifier—not another model—the authority.",
+          "limitations": "The reconstruction is still far from complete."
+        }
+      ]
+    },
+    {
+      "id": "linux-useful-software",
+      "title": "Linux & Useful Software",
+      "items": [
+        {
+          "headline": "ViewMD: a Markdown viewer that deliberately refuses to become Electron",
+          "summary": "ViewMD is a GTK3, C-based, read-only Markdown viewer with search, links, local images, themes, and Debian/RPM/AUR packaging. Its pitch is aggressively narrow: no webview, no editor, just open Markdown as a document.",
+          "source": "GitHub",
+          "repo": "rabfulton/ViewMD",
+          "url": "https://github.com/rabfulton/ViewMD",
+          "horizon": "Emerging",
+          "maturity": "usable",
+          "why_it_matters": "A small native program can be the correct answer when the job is simply to read a file.",
+          "why_i_might_care": "On Mint, this is close to the missing 'open .md like a PDF or text document' behavior without adopting a note-taking ecosystem."
+        },
+        {
+          "headline": "Rendu packages a polished Markdown reader into small native Linux packages",
+          "summary": "Rendu uses Tauri/Rust and the system webview rather than bundling Chromium. Debian/RPM packages are small, Linux Mint is explicitly supported, and the app can register as a Markdown handler.",
+          "source": "GitHub",
+          "repo": "kashioka/Rendu",
+          "url": "https://github.com/kashioka/Rendu",
+          "horizon": "New",
+          "maturity": "usable",
+          "why_it_matters": "It is a useful middle ground between pure-native rendering and Electron: web rendering features without shipping another complete browser runtime.",
+          "why_i_might_care": "If ViewMD is too minimal, this is the more polished 'double-click Markdown and read it' option."
+        }
+      ]
+    },
+    {
+      "id": "hardware-tinkering",
+      "title": "Hardware & Tinkering",
+      "items": [
+        {
+          "headline": "OpenBook puts an e-reader schematic, PCB, and enclosure work in the same repo",
+          "summary": "OpenBook E-Reader is an ESP32-C6-based open hardware reader with e-paper, microSD, USB-C, Li-Po support, power management, manufacturing files, and mechanical work.",
+          "source": "GitHub",
+          "repo": "florian-ariasu/openbook-e-reader",
+          "url": "https://github.com/florian-ariasu/openbook-e-reader",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "why_it_matters": "Most e-reader hacking begins after buying a closed device. This starts one level lower: the reader itself is inspectable hardware and software.",
+          "why_i_might_care": "It is a useful reference for what a purpose-built, hackable e-reader actually requires at the board and power level.",
+          "limitations": "Treat it as a prototype-oriented open hardware design, not a proven consumer-reader replacement."
+        },
+        {
+          "headline": "An e-paper room sign can stay electrically off until your phone wakes it",
+          "summary": "A Hackaday.io project uses ST25 NFC energy harvesting so a phone tap supplies a wake event and initial energy. A demo wakes an e-paper room sign, performs its network update, refreshes the display, then shuts back down.",
+          "source": "Hackaday.io",
+          "url": "https://hackaday.io/project/205461-harvesting-nfc-energy-to-transmit-commands",
+          "published_date": "2026-04-22",
+          "type": "hardware",
+          "horizon": "Unearthed",
+          "maturity": "experiment",
+          "why_it_matters": "This is different from 'sleep efficiently': keep the device genuinely off and let interaction supply the event and energy.",
+          "why_i_might_care": "It points toward ambient labels, room signs, and dashboards with almost no standby budget."
+        }
+      ]
+    },
+    {
+      "id": "how-did-they-do-that",
+      "title": "How Did They Do That?",
+      "items": [
+        {
+          "headline": "How matching decompilation turns 'looks right' into a byte-level test",
+          "summary": "A decompiler normally recovers plausible high-level behavior, not original source. Matching-decomp projects reconstruct code, compile it under historical toolchain assumptions, and compare emitted bytes with the original binary until they match.",
+          "source": "Retro Reversing + preservation repos",
+          "url": "https://www.retroreversing.com/how-decompilers-work",
+          "published_date": "2026-08-07",
+          "type": "mechanism",
+          "horizon": "Unearthed",
+          "maturity": "mature",
+          "why_it_matters": "The compiler becomes an oracle: formatting and names can be unknowable, but the binary gives a hard artifact against which hypotheses can be tested.",
+          "reader": {
+            "standfirst": "Decompilers give you a hypothesis. Matching decompilation adds a feedback loop that can prove whether the hypothesis reproduces the original machine code.",
+            "body": [
+              "A normal decompiler lifts machine instructions into intermediate representations, reconstructs control flow and data flow, infers types, and prints C-like pseudocode. Compilation discarded names and reorganized operations, so the output is not recovered original source.",
+              "Matching projects compile the reconstruction with the original compiler family, flags, calling conventions, data layout, and link assumptions, then compare the generated bytes with the retail executable.",
+              "A mismatch becomes evidence: perhaps a type width is wrong, a branch is expressed differently, a compiler optimization changed, or a structure layout is off. Contributors change source until the historical compiler emits the target sequence.",
+              "A native-port layer can then modernize graphics, audio, input, filesystems, and packaging while keeping the matching reconstruction as a continuously checked reference."
+            ],
+            "key_points": [
+              "Decompiler output is reconstruction, not recovered source text.",
+              "Historical compiler behavior is part of the evidence.",
+              "Byte equality creates a deterministic acceptance test.",
+              "Modernization is cleaner when separated from the matching reference."
+            ],
+            "limitations": "Matching bytes is one very strong reference check, not proof of every timing or external platform behavior.",
+            "what_to_try": "Read the Retro Reversing tutorial, then inspect one verified function in Vandal Hearts or Open-BFME and follow its comparison loop."
+          }
+        }
+      ]
+    },
+    {
+      "id": "research-worth-watching",
+      "title": "Research Worth Watching",
+      "items": [
+        {
+          "headline": "Hedged Agent Computing borrows a distributed-systems trick for unreliable agents",
+          "summary": "HACO sends a role request to a selected hedge set of candidate agent instances rather than trusting one fixed worker. It chooses enough candidates to meet a target reliability estimate and updates quality, latency, and failure statistics from experience.",
+          "source": "arXiv",
+          "url": "https://arxiv.org/abs/2607.19215",
+          "published_date": "2026-07-21",
+          "type": "research",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "It imports hedged requests—selective duplicate work when tail failure is costly—into agent orchestration.",
+          "potential_connection": "MAPS could study selective redundancy for high-risk or time-sensitive tasks rather than duplicating every step.",
+          "limitations": "Parallel attempts add cost, synchronization problems, and the possibility of correlated failure."
+        },
+        {
+          "headline": "MemToolAgent converts feedback into reusable tool-use memory",
+          "summary": "MemToolAgent extracts structured memories from tool interactions and user/environment feedback, including critiques of invalid executions, then retrieves a context-sized subset for the next task.",
+          "source": "arXiv",
+          "url": "https://arxiv.org/abs/2606.07909",
+          "published_date": "2026-06-06",
+          "type": "research",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "It treats operational mistakes as reusable learning without retraining the model.",
+          "limitations": "Project-reported benchmark gains need independent reproduction across other models and tool environments."
+        }
+      ]
+    },
+    {
+      "id": "weird-computer-corner",
+      "title": "Weird Computer Corner",
+      "items": [
+        {
+          "headline": "A six-color e-ink tag that borrows its electricity from your phone",
+          "summary": "A hobbyist demonstrated a 1.54-inch six-color e-ink tag with no onboard battery. An NFC-capable phone energizes the antenna; rectifier/boost circuitry powers the board long enough to refresh the screen; e-ink then holds the image without power.",
+          "source": "r/NFC project post",
+          "url": "https://www.reddit.com/r/NFC/comments/1vfyyhp/built_a_selfpowered_6colour_eink_display_that/",
+          "published_date": "2026-08-05",
+          "type": "hardware",
+          "horizon": "New",
+          "maturity": "experiment",
+          "why_it_matters": "The phone supplies both proximity and the energy for an update, leaving no battery to charge or replace.",
+          "why_i_might_care": "It is ambient computing in physical form: an object can hold information indefinitely while electrically dead most of the time.",
+          "limitations": "The creator said files were not yet released while hardware and enclosure bugs were being fixed."
+        }
+      ]
+    },
+    {
+      "id": "interest-discovery",
+      "title": "You Probably Didn't Know You Were Interested In This",
+      "items": [
+        {
+          "headline": "Hedged requests: sometimes the best retry starts before the first attempt fails",
+          "summary": "Distributed systems sometimes duplicate a slow or risky operation and accept the first good result, reducing the rare very-slow requests that dominate visible latency. HACO applies a related idea to agent workers.",
+          "source": "HACO / distributed-systems mechanism",
+          "url": "https://arxiv.org/abs/2607.19215",
+          "horizon": "Unearthed",
+          "maturity": "mature",
+          "why_it_matters": "Parallel agents are not only for debate or specialization; redundancy itself can be a reliability control.",
+          "why_i_might_care": "Selective redundancy may be more useful than another planning layer when failures come from timeouts, provider variance, or a worker simply going off track."
+        },
+        {
+          "headline": "Materialized views are a surprisingly good mental model for agent memory",
+          "summary": "Databases often keep durable base records and build faster derived views from them. mom's Ledger-to-Markdown design points toward the same pattern: preserve evidence, derive a task-friendly representation, and rebuild the representation when necessary.",
+          "source": "mom architecture",
+          "url": "https://github.com/momhq/mom",
+          "horizon": "Unearthed",
+          "maturity": "mature",
+          "why_it_matters": "This reframes memory from 'where do summaries live?' to 'what is authoritative, what is derived, and how do we recover?'",
+          "why_i_might_care": "The most readable document in a knowledge system does not have to be the system of record."
+        },
+        {
+          "headline": "Energy-harvesting interfaces: a device can be off until interaction powers it",
+          "summary": "NFC harvesting suggests interfaces with no ordinary idle state. The interaction itself provides energy to wake electronics, receive a small command, change persistent state such as e-ink, and disappear again.",
+          "source": "Hackaday.io",
+          "url": "https://hackaday.io/project/205461-harvesting-nfc-energy-to-transmit-commands",
+          "horizon": "Unearthed",
+          "maturity": "experiment",
+          "why_it_matters": "Low-power design usually asks how to sleep longer. Energy harvesting asks whether the environment or user action can eliminate standby power altogether.",
+          "why_i_might_care": "It connects e-ink to passive sensors, smart labels, and physical information systems rather than just another reader."
+        }
+      ]
+    },
+    {
+      "id": "maps-mechanisms",
+      "title": "Mechanisms Worth Studying for MAPS",
+      "items": [
+        {
+          "headline": "Append-only evidence → rebuildable projections",
+          "summary": "mom keeps captured history in a Ledger and treats its compact Markdown vault as a derived projection that can be rebuilt.",
+          "source": "momhq/mom",
+          "url": "https://github.com/momhq/mom",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Experiment",
+          "why_it_matters": "Recovery becomes an architectural property rather than a manual cleanup process.",
+          "potential_connection": "Test whether MAPS support documents can be regenerated from immutable or versioned evidence without losing authority and provenance."
+        },
+        {
+          "headline": "Subsystem contracts with conformance suites",
+          "summary": "Meterless describes agent engines through self-contained specs and runnable conformance tests rather than only an integration framework.",
+          "source": "Meterless/Meterless",
+          "url": "https://github.com/Meterless/Meterless",
+          "horizon": "Emerging",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "Agent architecture rules become externally testable.",
+          "potential_connection": "A MAPS handoff or recovery protocol could have executable fixtures proving allowed and rejected transitions."
+        },
+        {
+          "headline": "Reliability memory for delegation",
+          "summary": "Σ-Mem records competence evidence for peers and peer relationships, then uses that evidence in routing or aggregation.",
+          "source": "Σ-Mem",
+          "url": "https://arxiv.org/abs/2607.27958",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Study",
+          "why_it_matters": "Delegation quality can become evidence-based state instead of static role assignment.",
+          "potential_connection": "Start with a simple MAPS review ledger before considering any learned trust score."
+        },
+        {
+          "headline": "Origin-scoped tools and explicit mutation boundaries",
+          "summary": "WebMCP makes a site's callable operations explicit inside a browser origin, with metadata that can distinguish behavior such as read-only and mutation operations.",
+          "source": "WebMCP",
+          "url": "https://webmachinelearning.github.io/webmcp/",
+          "horizon": "New",
+          "maturity": "experiment",
+          "status": "Watch",
+          "why_it_matters": "Authority is attached to a capability rather than implicitly inherited from an agent's environment.",
+          "potential_connection": "Compare this with MAPS tool permissions: delegation should specify available capabilities and which writes require human confirmation."
+        }
+      ]
+    }
+  ],
+  "rabbit_hole": [
+    {
+      "headline": "Follow one function from machine code to decompiler output",
+      "summary": "Retro Reversing's new 'How Decompilers Work' tutorial walks through disassembly, intermediate representation, control-flow graphs, SSA, type recovery, fixed-point analysis, and C-like reconstruction. Read it, then open a matching-decomp repo and see what changes when plausible pseudocode must compile back to the original bytes.",
+      "source": "Retro Reversing",
+      "url": "https://www.retroreversing.com/how-decompilers-work",
+      "published_date": "2026-08-07",
+      "type": "tutorial",
+      "horizon": "New",
+      "commitment": "30 minutes",
+      "reader": {
+        "standfirst": "This is a bridge from 'decompilation sounds like magic' to a concrete model of the graph analyses a decompiler performs.",
+        "body": [
+          "Start with the distinction: disassembly decodes instructions; decompilation tries to recover variables, loops, types, and expressions.",
+          "Pay particular attention to intermediate representation, control-flow graphs, and SSA. These are close cousins of representations compilers use in the forward direction.",
+          "Then jump to VandalHearts-PcPort or Open-BFME and look for the extra preservation loop: recovered source is passed back through a compiler and compared with the known binary."
+        ],
+        "key_points": [
+          "Decompiler output is an evidence-based reconstruction.",
+          "IR and SSA make machine behavior easier to reason about.",
+          "Matching projects add compilation as a verification loop."
+        ],
+        "what_to_try": "Do not start with a whole game. Compile a tiny C function, inspect it in Ghidra, change optimization flags, and watch how the recovered structure changes."
+      }
+    }
+  ]
 }
