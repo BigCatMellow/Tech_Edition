@@ -1,0 +1,8 @@
+{
+  "date": "2026-08-26",
+  "generated_at": "2026-08-26T08:28:25-04:00",
+  "title": "Tech Edition",
+  "dek": "Archive copy of the first Tech Edition. The canonical complete edition is also available at data/latest.json.",
+  "archive_of": "data/latest.json",
+  "edition_commit": "4691c68a646dd4626ffdbb2acd4e9e3b6244175f"
+}
